@@ -1,8 +1,8 @@
-1.初始化package.json
+#1.初始化package.json
 npm init -y
-2.webpack-cli:可以解析用户传入的参数,把解析好的参数传给webpack进行打包(webpack4)
+#2.webpack-cli:可以解析用户传入的参数,把解析好的参数传给webpack进行打包(webpack4)
 npm install webpack webpack-cli --save-dev
-3.零配置的方式来打包
+#3.零配置的方式来打包
 npx webpack
 4.步骤3 报warning:The 'mode' option has not been set
 5.解决方案: npx webpack --mode development (webpack-cli解析参数)
