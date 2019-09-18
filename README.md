@@ -7,6 +7,7 @@ npx webpack
 ## 4.步骤3 报warning:The 'mode' option has not been set
 ## 5.解决方案: npx webpack --mode development (webpack-cli解析参数)
 ## 6.每次都需要写,很麻烦,所以可以放在scripts脚本中 npm run scripts 里面配置对应的命令
+
 ```
   "scripts": {
     "dev":"webpack --mode development",
@@ -45,13 +46,12 @@ module.exports = (env) =>{
 ## 12.默认是找webpack.config.js,所以需要告知wepack去找对应的配置文件
     1)webpack.base.js(传入参数mode,再根据env.development去判断合并webpack.dev.js还是合并webpack.prod.js并返回) 
     2)同样也可以直接指定dev找webpack.dev.js build找webpack.prod.js  dev和prod引入base
-````
+```
  "scripts": {
     "dev":"webpack --env.development --config ./config/webpack.base.js",
     "build":"webpack --env.production ./config/webpack.base.js"
   },
 ```
-
 ## 13.webpack合并 npm i webpack-merge --D
 ## 14.开发环境使用webpack-dev-server 是在内存中打包的,不会产生实体文件(默认是打包到根目录下)
 所以npm run dev肉眼无法看到dist文件夹,但可以被访问。为了方面查看,增加一个dev:build 在开发环境看到生成的文件
@@ -293,7 +293,7 @@ npm i @babel/core @babel/preset-env babel-loader -D
     use: {
         loader: 'babel-loader',
         options: {
-            
+
         }
     }
 },
