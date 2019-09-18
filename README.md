@@ -298,15 +298,152 @@ npm i @babel/core @babel/preset-env babel-loader -D
     }
 },
 ```
-插件的集合
  .babelrc
 ```
 {
     "presets": [
-        "@babel/preset-env"
+        "@babel/preset-env" //插件的集合,从下往上执行
     ]
 }
 ```
+执行npm run dev:build可以看到,bundle.js中将es6代码转换为了es5
+```
+const fn = () => {
+
+}
+fn()
+```
+=>
+```
+var fn = function fn() {};
+```
+## 33.草案语法
+npm i @babel/plugin-proposal-class-properties --D
+```
+class A {
+    a = 1
+}
+
+```
+等价于
+```
+class A {
+    constructor(props) {
+        this.a = 1;
+    }
+}
+```
+plugins默认一个插件
+```
+{ 
+    "presets": [
+        //配置多个插件
+        "@babel/preset-env" //插件的集合,这个是从下往上执行
+    ],
+    "plugins":[//插件是从上往下执行
+        "@babel/plugin-proposal-class-properties"
+    ]
+}
+
+```
+
+如果需要对插件传参
+```
+{ 
+    "presets": [
+        //配置多个插件
+        "@babel/preset-env" //插件的集合,这个是从下往上执行
+    ],
+    "plugins":[//插件是从上往下执行
+        ["@babel/plugin-proposal-class-properties",{
+            "loose": true 
+        }]
+    ]
+}
+
+```
+加上这个宽松属性,会把刚才的代码变成
+```
+class A {
+    a = 1 // this.a = 1
+}
+```
+如果"loose": false ,打包出来里面是Object.defineProperty来定义属性,装饰器无法使用
+建议使用true(才能用装饰器)
+
+## 34.babel7语法
+
+```
+@log
+class A {
+    a = 1 // this.a = 1
+}
+
+function log(target) {
+    //target代表的就是A
+
+}
+```
+npm i @babel/plugin-proposal-decorators --D
+必须在@babel/plugin-proposal-class-properties之前使用,参考https://babeljs.io/docs/en/babel-plugin-proposal-decorators
+```
+   "plugins":[//插件是从上往下执行
+        ["@babel/plugin-proposal-decorators",{
+            "legacy":true
+        }],
+        ["@babel/plugin-proposal-class-properties",{
+            "loose": true //加上这个宽松属性,
+        }]
+    ]
+```
+
+## 35.问题:不能转换高级语法 实例上的语法 以及promise
+`[1,2,3].includes(1)`
+## 36. 遇到这种API 帮我转换一下。好处是按需加载
+```   
+"presets": [
+        //插件包,含有很多很多插件
+        ["@babel/preset-env",{
+            "useBuiltIns": "usage"
+        }] //这个是从下往上执行
+],
+```
+
+## 37.报错，无法知道安装字符串还是数组
+```
+ERROR in ./src/index2.js
+Module not found: Error: Can't resolve 'core-js/modules/es6.string.includes' in 'D:\frontEnd\WEBPACK-BASE\src'
+ @ ./src/index2.js 2:0-45
+
+ERROR in ./src/index2.js
+Module not found: Error: Can't resolve 'core-js/modules/es7.array.includes' in 'D:\frontEnd\WEBPACK-BASE\src'
+ @ ./src/index2.js 1:0-44
+```
+ 解决方案：报错中已提示
+ npm install core-js@2 --D
+ ```
+   "presets": [
+        //插件包,含有很多很多插件
+        ["@babel/preset-env",{
+            //使用的api 会自动转化,并且是按需加载
+            "useBuiltIns": "usage",
+            "corejs": 2
+        }] //这个是从下往上执行
+    ],
+ ```
+
+ ## 38.还有问题
+ index.js中有一个class A,引入了另外一个js,这个js中有class B,可以看到bundle.js中，有多个_classCallCheck
+npm install --save-dev @babel/plugin-transform-runtime --D
+npm install --save @babel/runtime --D 
+
+这样的好处是使用_babel_runtime_helpers_classCallCheck,不用每次都编译,而是用统一的命令,比以前代码少很多
+
+
+
+
+
+
 
 
 

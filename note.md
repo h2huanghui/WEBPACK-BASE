@@ -69,5 +69,7 @@ bebel7
 ```
 8. 正则 ?
 test:/.jpe?g|png|gif$/
+9. babel7语法
+@log
 
 
