@@ -529,6 +529,11 @@ const VueLoaderPlugin = require('vue-loader/lib/plugin')
 npm i vue-property-decorator -D
 
 ## 46.不识别ts,需要在.babelrc中,解析ts时加一个参数
+```
+["@babel/preset-typescript",{
+    "allExtensions":true //这样就可以匹配ts文件
+}]
+```
 
 
 
