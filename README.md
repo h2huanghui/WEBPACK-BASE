@@ -28,8 +28,7 @@ module.exports = {
 }
 ```
 ## 9.vue-cli create-react-app 都是多个配置文件,将配置文件进行拆分
-## 10.
-给env加上development production属性,这样在配置文件中可以获取到当前是哪个环境
+## 10.给env加上development production属性,这样在配置文件中可以获取到当前是哪个环境
 ```
   "scripts": {
     "dev":"webpack --env.development",
@@ -46,13 +45,16 @@ module.exports = (env) =>{
 ## 12.默认是找webpack.config.js,所以需要告知wepack去找对应的配置文件
     1)webpack.base.js(传入参数mode,再根据env.development去判断合并webpack.dev.js还是合并webpack.prod.js并返回) 
     2)同样也可以直接指定dev找webpack.dev.js build找webpack.prod.js  dev和prod引入base
+````
  "scripts": {
     "dev":"webpack --env.development --config ./config/webpack.base.js",
     "build":"webpack --env.production ./config/webpack.base.js"
   },
+```
 
 ## 13.webpack合并 npm i webpack-merge --D
 ## 14.开发环境使用webpack-dev-server 是在内存中打包的,不会产生实体文件(默认是打包到根目录下)
+所以npm run dev肉眼无法看到dist文件夹,但可以被访问。为了方面查看,增加一个dev:build 在开发环境看到生成的文件
 ```
   "scripts": {
     "dev:build":"webpack --env.development --config ./config/webpack.base.js",
@@ -75,10 +77,10 @@ module.exports = {
 
 ```
 ## 16.存在问题,需要在dist目录下自己新建index.html文件,引入js文件
-自动生成html文件,并且引入打包后的js 
+希望:自动生成html文件,并且引入打包后的js 
 配置一个插件,在打包结束后,把当前文件的资源 打包后的结果 引入进来 并且产生到当前dist目录下
 ## 17.解决方案 npm i html-webpack-plugin --D
-
+开发环境不压缩代码,生产环境下压缩代码
 ```
    plugins: [
             new HtmlWebpackPlugin({
@@ -95,7 +97,7 @@ module.exports = {
 ## 18.存在问题 每次打包需要手动删除dist文件夹下的内容
 npm i clean-webpack-plugin --D
 ```
-const { CleanWebpackPlugin } = require('clean-webpack-plugin') //默认导出的是一个对象,对象有这个属性
+const { CleanWebpackPlugin } = require('clean-webpack-plugin') //插件默认导出的是一个对象,对象有这个属性
 new CleanWebpackPlugin({
     cleanOnceBeforeBuildPatterns:['**/*'] //默认所有目录下的所有文件
 })
@@ -136,11 +138,12 @@ npm i css-loader style-loader --D
 
 ## 20.解析scss
 npm i node-sass sass-loader --D
-
+```
  { //匹配到scss文件,用sass-loader调用node-sass处理sass文件
       test: /\.scss$/,
       use:['style-loader','css-loader','sass-loader']
 }
+```
 
 ## 21.存在一个场景(有bug)  index.js引入index.css,index.css中引入a.css,而a.css中又引入了a.scss 
 webpack首先找到index.js,然后发现这个文件里面引入了css文件,所以会调用css-loader来解析。但不会再去解析scss文件(可以看到整个scss文件直接被插入到style标签中了,而没有解析去解析,而事实上,我们是希望去解析的)
@@ -183,7 +186,9 @@ module.exports = {
 ```
 ## 24.存在问题 打包后的bundle.js中并没有加上前缀(目前浏览器默认版本都比较高,加了有些浪费性能)
 解决方案 告诉当前浏览器
+
 1).browserslistrc 
+
 2)package.json
 ```
  "browserslist": [
@@ -199,7 +204,7 @@ module.exports = {
 ## 25.抽离css文件,可以和js同时进行(抽离css插件)
 npm i mini-css-extract-plugin --D
 
-开发环境不用抽取,线上环境需要抽取\
+开发环境不用抽取,线上环境需要抽取
 ```
   isDev ? 'style-loader' : MiniXCssExtractLoader.loader,
 ```
@@ -211,8 +216,8 @@ npm i mini-css-extract-plugin --D
   }), 
 ```
 ## 27.存在问题:css文件为压缩(webpack生产环境只会默认压缩js,css不会压缩,需要另外配置)
+npm i optimize-css-assets-webpack-plugin --D
 ```
-
 const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin')
 module.exports = {
     mode: 'production',
@@ -224,7 +229,22 @@ module.exports = {
 }
 ```
 ## 28.存在问题 js未压缩(css手动压缩,那么js也需要手动压缩)
-npm i optimize-css-assets-webpack-plugin --D
+npm i terser-webpack-plugin --D
+```
+module.exports = {
+    mode: 'production',
+    optimization: { //优化项
+        minimizer: [
+            new TerserWebpackPlugin(),
+            new OptimizeCSSAssetsPlugin() //css手动压缩的话 js也需要手动压缩
+        ]
+    },
+    //在每次打包之前,先清除dist目录下的文件
+    plugins: [
+        new CleanWebpackPlugin()
+    ]
+}
+```
 
 ## 29.图片
 ```
@@ -235,47 +255,48 @@ img.src = logo
 document.body.appendChild(img)
 ```
 报错不认识图片,需要安装file-loader(默认功能拷贝)
+
 npm i file-loader -D
 
 ## 30.小图片转成base64(比以前大,不用发送http请求)
 npm i url-loader -D
 ```
-       {
-                    //图片转换
-                    test: /.jpe?g|png|gif$/,
-                    use: {
-                        loader: 'url-loader',
-                        //如果大于100k,会使用file-loader
-                        options: { 
-                            name:'image/[contentHash].[ext]', //当前contentHash-hash ext-当前后缀
-                            limit: 1024
-                        }//file-loader 默认的功能是拷贝的作用
-                        //希望当前较小的图片可以转化成base64 比以前大 好处就是不用http请求
-                    }
-                  
-                }
+{
+    //图片转换
+    test: /.jpe?g|png|gif$/,
+    use: {
+        loader: 'url-loader',
+        //如果大于100k,会使用file-loader
+        options: { 
+            name:'image/[contentHash].[ext]', //当前contentHash-hash ext-当前后缀
+            limit: 1024
+        }//file-loader 默认的功能是拷贝的作用
+        //希望当前较小的图片可以转化成base64 比以前大 好处就是不用http请求
+    }
+            
+}
 ```
 
 ## 31.图标
 ```
-   { //图标转换
-                    test: /\.(woff|ttf|eot|svg)$/,
-                    use:'file-loader'
-                },
+{ //图标转换
+    test: /\.(woff|ttf|eot|svg)$/,
+    use:'file-loader'
+},
 ```
 ## 32. js转换 
 npm i @babel/core @babel/preset-env babel-loader -D
 可以放在options中 很多的话不方面,建一个配置文件 .babelrc
 ```
-       {
-                    test: /\.js/,
-                    use: {
-                        loader: 'babel-loader',
-                        options: {
-                            
-                        }
-                    }
-                },
+{
+    test: /\.js/,
+    use: {
+        loader: 'babel-loader',
+        options: {
+            
+        }
+    }
+},
 ```
 插件的集合
  .babelrc
