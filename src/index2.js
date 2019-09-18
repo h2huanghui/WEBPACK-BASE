@@ -23,4 +23,10 @@ class A {
 
 }
 
+async function fn(){
+
+}
+
+fn()
+
 

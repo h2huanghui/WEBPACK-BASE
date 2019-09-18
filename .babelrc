@@ -1,18 +1,26 @@
-{ 
+{
     "presets": [
         //插件包,含有很多很多插件
-        ["@babel/preset-env",{
+        ["@babel/preset-env", {
             //使用的api 会自动转化,并且是按需加载
             "useBuiltIns": "usage",
             //babel-polyfill(类似于这个,包的补丁)
             "corejs": 2
-        }] //这个是从下往上执行
+        }], //这个是从下往上执行
+        "@babel/preset-react",
+        ["@babel/preset-typescript",{
+            "allExtensions":true //这样就可以匹配ts文件
+        }]
     ],
-    "plugins":[//插件是从上往下执行
-        //解析装饰器
-        ["@babel/plugin-proposal-decorators",{"legacy":true}],
-        //解析类的属性
-        ["@babel/plugin-proposal-class-properties",{"loose":true}], //加上这个宽松属性
-        "@babel/plugin-transform-runtime"
-    ]
+        "plugins": [ //插件是从上往下执行
+            //解析装饰器
+            ["@babel/plugin-proposal-decorators", {
+                "legacy": true
+            }],
+            //解析类的属性
+            ["@babel/plugin-proposal-class-properties", {
+                "loose": true
+            }], //加上这个宽松属性
+            "@babel/plugin-transform-runtime"
+        ]
 }

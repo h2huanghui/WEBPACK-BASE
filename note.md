@@ -69,7 +69,9 @@ bebel7
 ```
 8. 正则 ?
 test:/.jpe?g|png|gif$/
-9. babel7语法
+9. babel7语法 装饰符
 @log
+10. dependencies: 运行时的依赖,发布后,生产环境还要用的模块 --save简写-S 
+devDependencies: 开发依赖,开发时用,生产不用 --save-dev简写-D
 
 

@@ -4,11 +4,12 @@ const path = require('path')
 const merge = require('webpack-merge')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const MiniXCssExtractLoader = require('mini-css-extract-plugin')
+const VueLoaderPlugin = require('vue-loader/lib/plugin')
 module.exports = (env) => {
     console.log(env) //环境变量 
     let isDev = env.development
     const base = {
-        entry: path.resolve(__dirname, '../src/index2.js'),
+        entry: path.resolve(__dirname, '../src/index4.ts'),
         module: {
             //转化什么文件,用什么去转,使用哪些loader
             //写法 [](多个loader) 或 {}(传参数) 或 ''
@@ -18,8 +19,20 @@ module.exports = (env) => {
             //解析css的时候 就不能渲染dom(单线程)
             //css可以并行和js 一同加载 mini-css-extract-plugin
             rules: [
+                {
+                    test: /\.vue$/,
+                    use: {
+                        loader: 'vue-loader'
+                    }
+                },
                 {//解析js文件 默认会用调用@babel/core
-                    test: /\.js/,
+                    test: /\.tsx?$/,
+                    use: {
+                        loader: 'babel-loader'
+                    }
+                },
+                {//解析js文件 默认会用调用@babel/core
+                    test: /\.js$/,
                     use: {
                         loader: 'babel-loader'
                     }
@@ -68,7 +81,7 @@ module.exports = (env) => {
             !isDev &&　new MiniXCssExtractLoader({
                 filename:'css/main.css'
             }), 
-            
+            new VueLoaderPlugin(),
             new HtmlWebpackPlugin({
                 template: path.resolve(__dirname, '../public/index.html'), //以public里面的index.html作为模板
                 filename: 'index.html',

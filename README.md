@@ -52,7 +52,7 @@ module.exports = (env) =>{
     "build":"webpack --env.production ./config/webpack.base.js"
   },
 ```
-## 13.webpack合并 npm i webpack-merge --D
+## 13.webpack合并 npm i webpack-merge -D
 ## 14.开发环境使用webpack-dev-server 是在内存中打包的,不会产生实体文件(默认是打包到根目录下)
 所以npm run dev肉眼无法看到dist文件夹,但可以被访问。为了方面查看,增加一个dev:build 在开发环境看到生成的文件
 ```
@@ -79,7 +79,7 @@ module.exports = {
 ## 16.存在问题,需要在dist目录下自己新建index.html文件,引入js文件
 希望:自动生成html文件,并且引入打包后的js 
 配置一个插件,在打包结束后,把当前文件的资源 打包后的结果 引入进来 并且产生到当前dist目录下
-## 17.解决方案 npm i html-webpack-plugin --D
+## 17.解决方案 npm i html-webpack-plugin -D
 开发环境不压缩代码,生产环境下压缩代码
 ```
    plugins: [
@@ -95,7 +95,7 @@ module.exports = {
 ```
 
 ## 18.存在问题 每次打包需要手动删除dist文件夹下的内容
-npm i clean-webpack-plugin --D
+npm i clean-webpack-plugin -D
 ```
 const { CleanWebpackPlugin } = require('clean-webpack-plugin') //插件默认导出的是一个对象,对象有这个属性
 new CleanWebpackPlugin({
@@ -108,7 +108,7 @@ new CleanWebpackPlugin()
 ```
 
 ## 19.解析css
-npm i css-loader style-loader --D
+npm i css-loader style-loader -D
 
 字符串格式(从下往上)
 ```
@@ -137,7 +137,7 @@ npm i css-loader style-loader --D
 ```
 
 ## 20.解析scss
-npm i node-sass sass-loader --D
+npm i node-sass sass-loader -D
 ```
  { //匹配到scss文件,用sass-loader调用node-sass处理sass文件
       test: /\.scss$/,
@@ -161,9 +161,9 @@ webpack首先找到index.js,然后发现这个文件里面引入了css文件,所
 ```
 ## 22.打包css还需要处理 样式前缀 比如样式 transform:rotate(45deg)
 在浏览器版本比较低是,需要加上webkit前缀
-解决方案 npm i postcss-loader --D
+解决方案 npm i postcss-loader -D
 同样也需要一个插件 (sass-loader会调用node-sass)
-npm i autoprefixer --D
+npm i autoprefixer -D
 
 ```
     {
@@ -202,7 +202,7 @@ module.exports = {
 ```
 
 ## 25.抽离css文件,可以和js同时进行(抽离css插件)
-npm i mini-css-extract-plugin --D
+npm i mini-css-extract-plugin -D
 
 开发环境不用抽取,线上环境需要抽取
 ```
@@ -216,7 +216,7 @@ npm i mini-css-extract-plugin --D
   }), 
 ```
 ## 27.存在问题:css文件为压缩(webpack生产环境只会默认压缩js,css不会压缩,需要另外配置)
-npm i optimize-css-assets-webpack-plugin --D
+npm i optimize-css-assets-webpack-plugin -D
 ```
 const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin')
 module.exports = {
@@ -229,7 +229,7 @@ module.exports = {
 }
 ```
 ## 28.存在问题 js未压缩(css手动压缩,那么js也需要手动压缩)
-npm i terser-webpack-plugin --D
+npm i terser-webpack-plugin -D
 ```
 module.exports = {
     mode: 'production',
@@ -318,7 +318,7 @@ fn()
 var fn = function fn() {};
 ```
 ## 33.草案语法
-npm i @babel/plugin-proposal-class-properties --D
+npm i @babel/plugin-proposal-class-properties -D
 ```
 class A {
     a = 1
@@ -384,8 +384,11 @@ function log(target) {
 
 }
 ```
-npm i @babel/plugin-proposal-decorators --D
-必须在@babel/plugin-proposal-class-properties之前使用,参考https://babeljs.io/docs/en/babel-plugin-proposal-decorators
+npm i @babel/plugin-proposal-decorators -D
+
+必须在@babel/plugin-proposal-class-properties之前使用
+
+参考https://babeljs.io/docs/en/babel-plugin-proposal-decorators
 ```
    "plugins":[//插件是从上往下执行
         ["@babel/plugin-proposal-decorators",{
@@ -399,7 +402,7 @@ npm i @babel/plugin-proposal-decorators --D
 
 ## 35.问题:不能转换高级语法 实例上的语法 以及promise
 `[1,2,3].includes(1)`
-## 36. 遇到这种API 帮我转换一下。好处是按需加载
+## 36. 遇到这种API 告诉webpack帮我转换一下。好处是按需加载
 ```   
 "presets": [
         //插件包,含有很多很多插件
@@ -420,7 +423,9 @@ Module not found: Error: Can't resolve 'core-js/modules/es7.array.includes' in '
  @ ./src/index2.js 1:0-44
 ```
  解决方案：报错中已提示
- npm install core-js@2 --D
+ npm install core-js@2 -D
+
+(下载包的补丁)
  ```
    "presets": [
         //插件包,含有很多很多插件
@@ -434,10 +439,104 @@ Module not found: Error: Can't resolve 'core-js/modules/es7.array.includes' in '
 
  ## 38.还有问题
  index.js中有一个class A,引入了另外一个js,这个js中有class B,可以看到bundle.js中，有多个_classCallCheck
-npm install --save-dev @babel/plugin-transform-runtime --D
-npm install --save @babel/runtime --D 
 
-这样的好处是使用_babel_runtime_helpers_classCallCheck,不用每次都编译,而是用统一的命令,比以前代码少很多
+npm install --save-dev @babel/plugin-transform-runtime -D
+
+npm install --save @babel/runtime -S
+
+这样的好处是使用_babel_runtime_helpers_classCallCheck,不用每次都编译,而是用统一的命令,节约代码
+
+## 39.react使用 jsx解析
+npm i react react-dom -S
+
+//preset是一个集合
+npm i @babel/preset-react -D 
+
+先解析react
+```
+    "presets": [
+        //插件包,含有很多很多插件
+        ["@babel/preset-env", {
+            //使用的api 会自动转化,并且是按需加载
+            "useBuiltIns": "usage",
+            //babel-polyfill(类似于这个,包的补丁)
+            "corejs": 2
+        }], //这个是从下往上执行
+        "@babel/preset-react"
+    ],
+```
+
+## 40.TypeScript
+两种方式
+
+//1)用ts-loader 配合typescript
+
+//2)babel7 @babel/preset-typescript (转化ts库)
+
+npm i @babel/preset-typescript -D
+
+文件包含jsx,所以命名为.tsx (具体代码见index3.tsx)
+
+.babelrc需要增加@babel/preset-typescript 先将ts解析为js
+```
+ "presets": [
+        //插件包,含有很多很多插件
+        ["@babel/preset-env", {
+            //使用的api 会自动转化,并且是按需加载
+            "useBuiltIns": "usage",
+            //babel-polyfill(类似于这个,包的补丁)
+            "corejs": 2
+        }], //这个是从下往上执行
+        "@babel/preset-react",
+        "@babel/preset-typescript"
+    ],
+```
+rules中新增对ts或者tsx的规则配置
+```
+{//解析js文件 默认会用调用@babel/core
+    test: /\.tsx?$/,
+    use: {
+        loader: 'babel-loader'
+    }
+},
+```
+
+## 41.npm i typescript
+初始化ts配置文件 npx typescript --init  生成tscofig.json
+
+TS代码 类型提示 npm i @types/react @types/react-dom -S 
+
+## 42.vue  (index4.ts)
+npm i vue -S
+
+## 43. 存在问题,ts不认识引入的vue文件,需要建立vue的声明文件 vue-shime.d.ts (必须以d.js结尾)
+```
+declare module '*.vue' {
+    import Vue from 'vue'
+    export default Vue
+}
+
+```
+## 44. npm i vue-loader vue-template-compiler -D
+
+使用loader必须使用插件
+```
+const VueLoaderPlugin = require('vue-loader/lib/plugin')
+```
+在new VueLoaderPlugin()
+
+## 45. vue里面写ts (App.vue)
+npm i vue-property-decorator -D
+
+## 46.不识别ts,需要在.babelrc中,解析ts时加一个参数
+
+
+
+
+
+
+
+
 
 
 
