@@ -9,7 +9,7 @@ module.exports = (env) => {
     console.log(env) //环境变量 
     let isDev = env.development
     const base = {
-        entry: path.resolve(__dirname, '../src/index4.ts'),
+        entry: path.resolve(__dirname, '../src/index.js'),
         module: {
             //转化什么文件,用什么去转,使用哪些loader
             //写法 [](多个loader) 或 {}(传参数) 或 ''

@@ -535,6 +535,18 @@ npm i vue-property-decorator -D
 }]
 ```
 
+47. 热更新
+```
+devServer: { //开发服务的配置
+    port: 3000,
+    hot:true,
+    compress: true,//gzip 可以提升返回页面的速度
+    contentBase: path.resolve(__dirname,'../dist') //webpack启动服务会在dist目录下
+}
+```
+  
+
+
 
 
 
