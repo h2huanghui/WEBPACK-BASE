@@ -58,7 +58,7 @@ module.exports = (env) => {
                 },
                 {
                     //图片转换
-                    test: /.jpe?g|png|gif$/,
+                    test: /\.(jpe?g|png|gif)$/,
                     use: {
                         loader: 'url-loader',
                         //如果大于100k,会使用file-loader

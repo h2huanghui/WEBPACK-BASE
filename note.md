@@ -1,7 +1,7 @@
 
 //webpack默认支持 模块的写法,commonjs语法 规范(node)
 
-//es5规范 esmodule
+//es6规范 esmodule
 
 //把这个模块打包 解析出浏览器可以识别的代码
 ```
@@ -45,9 +45,9 @@ babel 转化 vue-cli基于babel6来实现
 
 bebel7 
 
-默认会调用babel/core会转化代码 转化的时候需要@babel/presets-env 转换成es5
+默认会调用babel/core会转化代码 转化的时候需要@babel/presets-env 将es6转换成es5
 
-@babel/core @babel/preset-env(插件) babel-loader
+@babel/core @babel/preset-env(包含所有es6->es5插件) babel-loader(webpack)
  
 //react + vue 
 

@@ -14,6 +14,6 @@ import {Component,Vue} from 'vue-property-decorator'
 })
 export default class ToDo extends Vue {
   
-   public todos:string[] = [1,2,3]
+   public todos:string[] = ['香蕉','苹果','橘子']
 }
 </script>
